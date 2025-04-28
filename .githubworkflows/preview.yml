@@ -1,0 +1,23 @@
+name: Deploy PR Preview
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  push:
+    branches: [main]
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: preview-pages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Deploy Preview
+        uses: rajyan/preview-pages@v1
+        with:
+          source-dir: .
+          target-dir: preview-pages
