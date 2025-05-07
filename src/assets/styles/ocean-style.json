@@ -1,0 +1,30 @@
+{
+    "version": 8,
+    "sources": {
+        "openmaptiles": {
+            "type": "vector",
+            "url": "https://api.maptiler.com/tiles/v3/tiles.json"
+        }
+    },
+    "layers": [{
+            "id": "water",
+            "type": "fill",
+            "source": "openmaptiles",
+            "source-layer": "water",
+            "paint": {
+                "fill-color": "#1e90ff"
+            }
+        },
+        {
+            "id": "port",
+            "type": "symbol",
+            "source": "openmaptiles",
+            "source-layer": "poi",
+            "filter": ["==", "class", "port"],
+            "layout": {
+                "icon-image": "port-icon",
+                "icon-size": 1.0
+            }
+        }
+    ]
+}

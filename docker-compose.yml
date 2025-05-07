@@ -1,0 +1,22 @@
+services:
+  sangotwin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: harbor.sangoai.com/frontend/sangotwin:latest
+    hostname: sangotwin
+    container_name: sangotwin
+    restart: always
+    network_mode: bridge
+    # working_dir: /usr/share/nginx/html
+    env_file:
+      - .env
+    # environment:
+    #   - name=value
+    #   - VITE_REQUEST_PREFIX = http://localhost:3000
+    #   - VITE_APP_BASEURL = http://localhost:3000
+    #   - VITE_APP_PROP= 9911
+    #   - VITE_IPCONFIG = '84:0, 86:1, 87:2, 89:3'
+    ports:
+      #- "3000:80"
+      - '80:80'

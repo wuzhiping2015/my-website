@@ -1,0 +1,17 @@
+{
+    "version": 8,
+    "sources": {
+        "satellite": {
+            "type": "raster",
+            "url": "https://api.maptiler.com/tiles/satellite-v2/tiles.json"
+        }
+    },
+    "layers": [{
+        "id": "satellite",
+        "type": "raster",
+        "source": "satellite",
+        "paint": {
+            "raster-opacity": 0.8
+        }
+    }]
+}

@@ -1,58 +1,45 @@
 ﻿<template>
   <div class="app-container">
     <div class="nav-menu">
-      <!-- <button :class="{ active: currentView === 'demo' }" @click="currentView = 'demo'">原始Demo</button>
-      <button :class="{ active: currentView === 'demo2' }" @click="currentView = 'demo2'">3D模型查看器</button> -->
-      <!-- <button :class="{ active: currentView === 'demo3' }" @click="currentView = 'demo3'">阀门金属材质</button>
-      <button :class="{ active: currentView === 'modelViewer' }" @click="currentView = 'modelViewer'">模型查看器(新)</button> -->
-      <button :class="{ active: currentView === 'discovery' }" @click="currentView = 'discovery'">发现页面</button>
-      <button :class="{ active: currentView === 'videoPlayerPage' }" @click="currentView = 'videoPlayerPage'">发现页面2</button>
+      <router-link to="/Demo" class="nav-button">模型查看器</router-link>
+      <router-link to="/Demo2" class="nav-button">模型查看器2</router-link>
+      <router-link to="/model-viewer" class="nav-button">3D模型查看器</router-link>
+      <router-link to="/digital-twin" class="nav-button">digital-twin</router-link>
+      <router-link to="/maritime-map" class="nav-button">海事地图</router-link>
+      <router-link to="/mapbox-maritime" class="nav-button">Mapbox航海系统</router-link>
     </div>
     <div class="content-container">
-      <component :is="currentComponent" />
+      <router-view />
     </div>
+
+    <!-- 全局通知组件 -->
+    <NotificationToast />
   </div>
 </template>
 
-<script>
-import Demo from './components/Demo.vue'
-import Demo2 from './components/Demo2.vue'
-import Demo3 from './components/Demo3.vue'
-import ModelViewer from './components/ModelViewer.vue'
-import Discovery from './components/Discovery.vue'
-import VideoPlayerPage from './components/VideoPlayerPage.vue'
+<script setup>
+// 使用组合式API
+import { useUIStore } from "./stores/uiStore";
+import { onMounted } from "vue";
+import NotificationToast from "./components/NotificationToast.vue";
 
-export default {
-  name: 'App',
-  components: {
-    Demo,
-    Demo2,
-    Demo3,
-    ModelViewer,
-    Discovery,
-    VideoPlayerPage
-  },
-  data() {
-    return {
-      currentView: 'discovery'
-    }
-  },
-  computed: {
-    currentComponent() {
-      if (this.currentView === 'demo') return 'Demo';
-      if (this.currentView === 'demo2') return 'Demo2';
-      if (this.currentView === 'demo3') return 'Demo3';
-      if (this.currentView === 'modelViewer') return 'ModelViewer';
-      if (this.currentView === 'discovery') return 'Discovery';
-      if (this.currentView === 'videoPlayerPage') return 'VideoPlayerPage';
-      return 'Demo3';
-    }
-  }
-}
+// 初始化UI存储
+const uiStore = useUIStore();
+
+// 组件挂载时初始化UI状态
+onMounted(() => {
+  uiStore.initStore();
+
+  // 监听窗口大小变化
+  window.addEventListener("resize", () => {
+    uiStore.updateViewportSize(window.innerWidth, window.innerHeight);
+  });
+});
 </script>
 
 <style>
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -60,18 +47,22 @@ html, body {
   font-family: Arial, sans-serif;
 }
 
+#app {
+  height: 100vh;
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden; /* 防止出现滚动条 */
+  height: 100%;
+  overflow: hidden;
 }
 
 .content-container {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* 防止内容溢出 */
+  overflow: hidden;
 }
 
 .nav-menu {
@@ -81,7 +72,7 @@ html, body {
   gap: 10px;
 }
 
-.nav-menu button {
+.nav-button {
   padding: 8px 16px;
   border: none;
   background: #555;
@@ -89,13 +80,16 @@ html, body {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s;
 }
 
-.nav-menu button:hover {
+.nav-button:hover {
   background: #777;
 }
 
-.nav-menu button.active {
+.router-link-active {
   background: #4a90e2;
 }
 </style>

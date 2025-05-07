@@ -6,14 +6,18 @@
       <span>加载中... {{ loadingProgress }}%</span>
     </div>
     <div class="error-message" v-if="loadError">{{ loadError }}</div>
-    
+
     <!-- 模型选择器 -->
     <div class="model-selector">
-      <div class="model-category" v-for="(models, category) in modelCategories" :key="category">
+      <div
+        class="model-category"
+        v-for="(models, category) in modelCategories"
+        :key="category"
+      >
         <h3>{{ category }}</h3>
         <div class="model-buttons">
-          <button 
-            v-for="model in models" 
+          <button
+            v-for="model in models"
             :key="model.path"
             @click="loadSpecificModel(model.path)"
             :class="{ active: currentModel === model.path }"
@@ -24,47 +28,51 @@
         </div>
       </div>
     </div>
-    
+
     <!-- 控制面板 -->
     <div class="controls-panel">
-      <div class="control-group">
+      <!-- <div class="control-group">
         <h3>视图控制</h3>
         <button @click="rotateCameraLeft">← 左旋转</button>
         <button @click="rotateCameraRight">右旋转 →</button>
         <button @click="zoomIn">放大 +</button>
         <button @click="zoomOut">缩小 -</button>
         <button @click="resetCamera">重置视图</button>
-      </div>
-      
+      </div> -->
+
       <div class="control-group">
         <h3>显示选项</h3>
         <label>
-          <input type="checkbox" v-model="showGrid" @change="toggleGrid">
+          <input type="checkbox" v-model="showGrid" @change="toggleGrid" />
           显示网格
         </label>
         <label>
-          <input type="checkbox" v-model="showAxes" @change="toggleAxes">
+          <input type="checkbox" v-model="showAxes" @change="toggleAxes" />
           显示坐标轴
         </label>
         <label>
-          <input type="checkbox" v-model="showBoundingBox" @change="toggleBoundingBox">
+          <input
+            type="checkbox"
+            v-model="showBoundingBox"
+            @change="toggleBoundingBox"
+          />
           显示包围盒
         </label>
       </div>
-      
+
       <div class="control-group" v-if="hasAnimations">
         <h3>动画控制</h3>
         <button @click="toggleAnimation">
-          {{ isPlaying ? '暂停' : '播放' }}
+          {{ isPlaying ? "暂停" : "播放" }}
         </button>
-        <input 
-          type="range" 
-          v-model="animationSpeed" 
-          min="0.1" 
-          max="2" 
+        <input
+          type="range"
+          v-model="animationSpeed"
+          min="0.1"
+          max="2"
           step="0.1"
           @input="updateAnimationSpeed"
-        >
+        />
         <span>速度: {{ animationSpeed }}x</span>
       </div>
 
@@ -73,7 +81,7 @@
         <button @click="captureScreenshot">截图</button>
       </div>
     </div>
-    
+
     <!-- 性能监控 -->
     <div class="performance-monitor" v-if="showPerformance">
       <div>FPS: {{ fps }}</div>
@@ -170,10 +178,12 @@ export default defineComponent({
         controls: null,
         model: null,
         mixer: null,
-        composer: null
+        composer: null,
       } as NonReactiveObjects,
-      fitCameraToObject: null as ((object: THREE.Object3D, offset?: number) => void) | null,
-      currentModel: "STEP203.fbx",
+      fitCameraToObject: null as
+        | ((object: THREE.Object3D, offset?: number) => void)
+        | null,
+      currentModel: "阀门.fbx",
       showGrid: true,
       showAxes: true,
       showBoundingBox: false,
@@ -186,25 +196,25 @@ export default defineComponent({
       lastTime: 0,
       frameCount: 0,
       modelCategories: {
-        '船舶模型': [
-          { name: 'STEP203模型', path: 'STEP203.fbx' },
-          { name: '船模型 (GLTF)', path: '6.gltf' },
-          { name: '船模型1 (FBX)', path: 'ship1.fbx' },
-          { name: '备用模型 (GLTF)', path: 'untitled.gltf' }
+        船舶模型: [
+          { name: "阀门", path: "阀门.fbx" },
+          { name: "船模型 (GLTF)", path: "6.gltf" },
+          { name: "船模型1 (FBX)", path: "ship1.fbx" },
+          { name: "备用模型 (GLTF)", path: "untitled.gltf" },
         ],
-        '其他模型': [
-          { name: '1号模型 (FBX)', path: '1.fbx' },
-          { name: '2号模型 (FBX)', path: '2.fbx' },
-          { name: 'PrimaryIonDrive', path: 'PrimaryIonDrive.glb' },
-          { name: 'UI模型', path: 'ui.fbx' },
-          { name: '机器模型', path: 'machine.fbx' }
-        ]
+        其他模型: [
+          { name: "1号模型 (FBX)", path: "1.fbx" },
+          { name: "2号模型 (FBX)", path: "2.fbx" },
+          { name: "PrimaryIonDrive", path: "PrimaryIonDrive.glb" },
+          { name: "UI模型", path: "ui.fbx" },
+          { name: "机器模型", path: "machine.fbx" },
+        ],
       },
       modelInfo: {
         vertices: 0,
         faces: 0,
         materials: 0,
-        dimensions: '0 x 0 x 0'
+        dimensions: "0 x 0 x 0",
       } as ModelInfo,
     };
   },
@@ -223,7 +233,7 @@ export default defineComponent({
       try {
         const scene = markRaw(new THREE.Scene());
         scene.background = new THREE.Color(0x222222);
-        
+
         // 优化环境光照
         const ambientLight = markRaw(new THREE.AmbientLight(0xffffff, 0.4));
         scene.add(ambientLight);
@@ -252,7 +262,9 @@ export default defineComponent({
         scene.add(fillLight);
 
         // 添加环境半球光（提供更自然的环境光照）
-        const hemiLight = markRaw(new THREE.HemisphereLight(0xffffff, 0x444444, 0.4));
+        const hemiLight = markRaw(
+          new THREE.HemisphereLight(0xffffff, 0x444444, 0.4)
+        );
         hemiLight.position.set(0, 20, 0);
         scene.add(hemiLight);
 
@@ -264,7 +276,7 @@ export default defineComponent({
         // 直接保存到非响应式对象中，不使用Vue的响应式
         this.nonReactiveObjects.scene = scene;
         this.scene = scene;
-        
+
         // 获取容器并设置相机
         const container = document.getElementById("model-viewer");
         if (!container) {
@@ -272,34 +284,38 @@ export default defineComponent({
         }
 
         // 设置相机
-        const camera = markRaw(new THREE.PerspectiveCamera(
-          45,
-          container.clientWidth / container.clientHeight,
-          0.1,
-          1000
-        ));
+        const camera = markRaw(
+          new THREE.PerspectiveCamera(
+            45,
+            container.clientWidth / container.clientHeight,
+            0.1,
+            1000
+          )
+        );
         camera.position.copy(this.initialCameraPosition);
         camera.lookAt(0, 0, 0);
-        
+
         // 直接保存到非响应式对象中，不使用Vue的响应式引用
         this.nonReactiveObjects.camera = camera;
         this.camera = camera;
 
         // 创建渲染器
-        const renderer = markRaw(new THREE.WebGLRenderer({
-          antialias: true,
-          alpha: true,
-          logarithmicDepthBuffer: true,
-          powerPreference: "high-performance"
-        }));
-        
+        const renderer = markRaw(
+          new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+            logarithmicDepthBuffer: true,
+            powerPreference: "high-performance",
+          })
+        );
+
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        
+
         // 直接保存到非响应式对象中，不使用Vue的响应式引用
         this.nonReactiveObjects.renderer = renderer;
         this.renderer = renderer;
@@ -307,7 +323,9 @@ export default defineComponent({
         container.appendChild(renderer.domElement);
 
         // 设置轨道控制器
-        const controls = markRaw(new OrbitControls(camera, renderer.domElement));
+        const controls = markRaw(
+          new OrbitControls(camera, renderer.domElement)
+        );
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.enablePan = true;
@@ -315,13 +333,15 @@ export default defineComponent({
         controls.maxDistance = 50;
         controls.maxPolarAngle = Math.PI / 1.5;
         controls.update();
-        
+
         // 直接保存到非响应式对象中，不使用Vue的响应式引用
         this.nonReactiveObjects.controls = controls;
         this.controls = controls;
 
         // 添加网格辅助线
-        const gridHelper = markRaw(new THREE.GridHelper(20, 20, 0x555555, 0x333333));
+        const gridHelper = markRaw(
+          new THREE.GridHelper(20, 20, 0x555555, 0x333333)
+        );
         gridHelper.name = "gridHelper";
         scene.add(gridHelper);
 
@@ -334,9 +354,9 @@ export default defineComponent({
         this.fitCameraToObject = (object, offset = 1.5) => {
           const camera = this.nonReactiveObjects.camera;
           const controls = this.nonReactiveObjects.controls;
-          
+
           if (!camera) return;
-          
+
           const box = new THREE.Box3().setFromObject(object);
           const size = box.getSize(new THREE.Vector3());
           const center = box.getCenter(new THREE.Vector3());
@@ -358,14 +378,14 @@ export default defineComponent({
         // 开始动画循环
         const animate = () => {
           this.animationFrameId = requestAnimationFrame(animate);
-          
+
           // 使用非响应式对象来避免 Vue 的 Proxy 问题
           const camera = this.nonReactiveObjects.camera;
           const scene = this.nonReactiveObjects.scene;
           const renderer = this.nonReactiveObjects.renderer;
           const controls = this.nonReactiveObjects.controls;
           const mixer = this.nonReactiveObjects.mixer;
-          
+
           if (controls) {
             controls.update();
           }
@@ -378,11 +398,11 @@ export default defineComponent({
           if (scene && camera && renderer) {
             renderer.render(scene, camera);
           }
-          
+
           // 更新性能监控
           this.updatePerformanceMetrics();
         };
-        
+
         animate();
       } catch (err) {
         console.error("初始化Three.js错误:", err);
@@ -399,18 +419,18 @@ export default defineComponent({
       this.modelLoaded = false;
       this.loadError = null;
       this.loadingProgress = 0;
-      
+
       console.log(`开始加载模型: ${modelPath}`);
-      
+
       // 清理旧模型资源
       this.cleanupModel();
-      
+
       // 判断文件类型并使用适当的加载器
-      const fileExtension = modelPath.split('.').pop().toLowerCase();
-      
-      if (fileExtension === 'gltf' || fileExtension === 'glb') {
+      const fileExtension = modelPath.split(".").pop().toLowerCase();
+
+      if (fileExtension === "gltf" || fileExtension === "glb") {
         this.loadGLTFModel(modelPath);
-      } else if (fileExtension === 'fbx') {
+      } else if (fileExtension === "fbx") {
         this.loadFBXModel(modelPath);
       } else {
         this.loadError = `不支持的文件格式: ${fileExtension}`;
@@ -421,14 +441,14 @@ export default defineComponent({
     loadGLTFModel(modelPath) {
       console.log(`开始加载GLTF模型: ${modelPath}`);
       const loader = new GLTFLoader();
-      
+
       // 添加DRACO压缩支持
       const dracoLoader = new DRACOLoader();
-      // 使用官方CDN
-      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
-      dracoLoader.setDecoderConfig({ type: 'js' });
+      // 使用node_modules中的DRACO解码器
+      dracoLoader.setDecoderPath('/node_modules/draco3d/');
+      dracoLoader.setDecoderConfig({ type: "js" });
       loader.setDRACOLoader(dracoLoader);
-      
+
       loader.load(
         modelPath,
         (gltf) => {
@@ -437,19 +457,21 @@ export default defineComponent({
               animations: gltf.animations?.length || 0,
               scenes: gltf.scenes?.length || 0,
               cameras: gltf.cameras?.length || 0,
-              assets: gltf.asset
+              assets: gltf.asset,
             });
-            
+
             if (!gltf.scene) {
               throw new Error("加载的模型没有场景数据");
             }
-            
+
             // 使用markRaw防止Vue的响应式系统代理Three.js对象
             const scene = markRaw(gltf.scene);
-            const animations = gltf.animations ? gltf.animations.map(anim => markRaw(anim)) : [];
-            
+            const animations = gltf.animations
+              ? gltf.animations.map((anim) => markRaw(anim))
+              : [];
+
             this.processModel(scene);
-            
+
             // 设置动画
             if (animations && animations.length) {
               this.setupAnimations(scene, animations);
@@ -486,13 +508,15 @@ export default defineComponent({
         (fbx) => {
           try {
             console.log(`模型 ${modelPath} 加载成功`);
-            
+
             // 使用markRaw防止Vue的响应式系统代理Three.js对象
             const model = markRaw(fbx);
-            const animations = fbx.animations ? fbx.animations.map(anim => markRaw(anim)) : [];
-            
+            const animations = fbx.animations
+              ? fbx.animations.map((anim) => markRaw(anim))
+              : [];
+
             this.processModel(model);
-            
+
             // 设置动画
             if (animations && animations.length) {
               this.setupAnimations(model, animations);
@@ -516,7 +540,7 @@ export default defineComponent({
       try {
         // Ensure model is not reactive
         model = markRaw(model);
-        
+
         const scene = this.nonReactiveObjects.scene;
         if (!scene) {
           throw new Error("场景未初始化");
@@ -527,25 +551,25 @@ export default defineComponent({
         if (oldModel) {
           scene.remove(oldModel);
         }
-        
+
         // 设置模型名称
         model.name = "loadedModel";
-        
+
         // 计算包围盒
         const box = markRaw(new THREE.Box3().setFromObject(model));
         const size = markRaw(new THREE.Vector3());
         const center = markRaw(new THREE.Vector3());
         box.getSize(size);
         box.getCenter(center);
-        
+
         // 计算合适的缩放比例
         const maxDim = Math.max(size.x, size.y, size.z);
         const scale = maxDim > 0 ? 5 / maxDim : 1;
-        
+
         // 设置模型变换
         model.scale.setScalar(scale);
         model.position.copy(center).multiplyScalar(-scale);
-        
+
         // 优化模型
         model.traverse((object) => {
           if (object.isMesh) {
@@ -556,50 +580,62 @@ export default defineComponent({
               if (!object.geometry.attributes.uv) {
                 object.geometry.computeVertexNormals();
               }
-              
+
               // 使用 BufferGeometryUtils 合并顶点 (如果需要)
               // 注意：现代版本的 three.js 中，这是可选的，只有在特定场景下才需要
               try {
                 // 仅在必要时应用合并顶点
-                if (object.geometry.attributes.position && 
-                    object.geometry.attributes.position.count > 1000) {
+                if (
+                  object.geometry.attributes.position &&
+                  object.geometry.attributes.position.count > 1000
+                ) {
                   // 使用正确的 BufferGeometryUtils.mergeVertices
-                  object.geometry = BufferGeometryUtils.mergeVertices(object.geometry);
+                  object.geometry = BufferGeometryUtils.mergeVertices(
+                    object.geometry
+                  );
                 }
               } catch (err) {
                 console.warn("合并顶点失败，跳过此步骤:", err);
               }
             }
-            
+
             // 设置默认PBR材质
             if (!object.material) {
               object.material = new THREE.MeshStandardMaterial({
                 color: 0x808080,
                 metalness: 0.5,
                 roughness: 0.5,
-                envMapIntensity: 1.0
+                envMapIntensity: 1.0,
               });
             }
-            
+
             // 优化材质
             if (object.material) {
-              const materials = Array.isArray(object.material) ? object.material : [object.material];
-              materials.forEach(material => {
+              const materials = Array.isArray(object.material)
+                ? object.material
+                : [object.material];
+              materials.forEach((material) => {
                 // 基础材质设置
                 material.side = THREE.DoubleSide;
                 material.needsUpdate = true;
-                
+
                 // 启用阴影
                 object.castShadow = true;
                 object.receiveShadow = true;
-                
+
                 // 优化PBR材质参数
                 if (material instanceof THREE.MeshStandardMaterial) {
                   material.envMapIntensity = 1.0;
-                  material.roughness = Math.min(Math.max(material.roughness, 0.2), 0.8);
-                  material.metalness = Math.min(Math.max(material.metalness, 0.1), 0.9);
+                  material.roughness = Math.min(
+                    Math.max(material.roughness, 0.2),
+                    0.8
+                  );
+                  material.metalness = Math.min(
+                    Math.max(material.metalness, 0.1),
+                    0.9
+                  );
                 }
-                
+
                 // 优化纹理
                 if (material.map) {
                   material.map.anisotropy = 16;
@@ -607,13 +643,13 @@ export default defineComponent({
                   material.map.magFilter = THREE.LinearFilter;
                   material.map.needsUpdate = true;
                 }
-                
+
                 // 优化法线贴图
                 if (material.normalMap) {
                   material.normalMap.anisotropy = 16;
                   material.normalScale.set(1, 1);
                 }
-                
+
                 // 优化环境遮挡贴图
                 if (material.aoMap) {
                   material.aoMap.anisotropy = 16;
@@ -626,39 +662,40 @@ export default defineComponent({
 
         // 添加到场景
         scene.add(model);
-        
+
         // 更新包围盒辅助对象
         const boundingBox = markRaw(new THREE.BoxHelper(model, 0xff0000));
         boundingBox.name = "modelBoxHelper";
         boundingBox.visible = this.showBoundingBox;
         scene.add(boundingBox);
-        
+
         // 添加地面阴影接收平面
         const groundGeometry = markRaw(new THREE.PlaneGeometry(100, 100));
-        const groundMaterial = markRaw(new THREE.ShadowMaterial({ opacity: 0.3 }));
+        const groundMaterial = markRaw(
+          new THREE.ShadowMaterial({ opacity: 0.3 })
+        );
         const ground = markRaw(new THREE.Mesh(groundGeometry, groundMaterial));
         ground.rotation.x = -Math.PI / 2;
         ground.position.y = box.min.y;
         ground.receiveShadow = true;
         ground.name = "shadowGround";
         scene.add(ground);
-        
+
         // 调整相机视角
         this.fitCameraToObject(model, 1.5);
-        
+
         // 强制渲染一帧
         const renderer = this.nonReactiveObjects.renderer;
         const camera = this.nonReactiveObjects.camera;
         if (renderer && scene && camera) {
           renderer.render(scene, camera);
         }
-        
+
         this.modelLoaded = true;
         this.loadError = null;
-        
+
         // 更新模型信息
         this.updateModelInfo(model);
-        
       } catch (err) {
         console.error("处理模型时出错:", err);
         this.loadError = `处理模型错误: ${err.message}`;
@@ -671,12 +708,12 @@ export default defineComponent({
       material.opacity = 1.0;
       material.side = THREE.DoubleSide;
       material.needsUpdate = true;
-      
+
       // 添加环境光遮蔽
       if (material.aoMap) {
         material.aoMapIntensity = 1.0;
       }
-      
+
       // 添加法线贴图
       if (material.normalMap) {
         material.normalScale.set(1, 1);
@@ -689,7 +726,7 @@ export default defineComponent({
         const mixer = markRaw(new THREE.AnimationMixer(model));
         this.nonReactiveObjects.mixer = mixer;
         this.mixer = mixer; // The keep the property for compatibility
-        
+
         const action = mixer.clipAction(animations[0]);
         action.play();
         this.isPlaying = true;
@@ -721,17 +758,17 @@ export default defineComponent({
     cleanupModel() {
       const scene = this.nonReactiveObjects.scene;
       if (!scene) return;
-      
+
       const oldModel = scene.getObjectByName("loadedModel");
       if (oldModel) {
         scene.remove(oldModel);
-        
+
         // 递归处理模型以释放内存
         oldModel.traverse((object) => {
           if (object.geometry) {
             object.geometry.dispose();
           }
-          
+
           if (object.material) {
             if (Array.isArray(object.material)) {
               object.material.forEach((material) => {
@@ -756,11 +793,11 @@ export default defineComponent({
         this.nonReactiveObjects.mixer = null;
         this.mixer = null;
       }
-      
+
       // 辅助函数来处理材质及其相关纹理
       function disposeMaterial(material) {
         if (!material) return;
-        
+
         // 处理材质纹理
         if (material.map) material.map.dispose();
         if (material.lightMap) material.lightMap.dispose();
@@ -774,7 +811,7 @@ export default defineComponent({
         if (material.metalnessMap) material.metalnessMap.dispose();
         if (material.roughnessMap) material.roughnessMap.dispose();
         if (material.envMap) material.envMap.dispose();
-        
+
         // 释放材质本身
         material.dispose();
       }
@@ -812,7 +849,7 @@ export default defineComponent({
       if (scene) {
         scene.clear();
       }
-      
+
       // 重置非响应式对象
       this.nonReactiveObjects = {
         scene: null,
@@ -821,7 +858,7 @@ export default defineComponent({
         controls: null,
         model: null,
         mixer: null,
-        composer: null
+        composer: null,
       };
     },
     // 性能监控
@@ -832,16 +869,21 @@ export default defineComponent({
     updatePerformanceMetrics() {
       this.frameCount++;
       const currentTime = performance.now();
-      
+
       if (currentTime - this.lastTime >= 1000) {
-        this.fps = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
-        
-        if (performance && 'memory' in performance) {
-          this.memoryUsage = Math.round((performance as any).memory.usedJSHeapSize / (1024 * 1024)) || 0;
+        this.fps = Math.round(
+          (this.frameCount * 1000) / (currentTime - this.lastTime)
+        );
+
+        if (performance && "memory" in performance) {
+          this.memoryUsage =
+            Math.round(
+              (performance as any).memory.usedJSHeapSize / (1024 * 1024)
+            ) || 0;
         } else {
           this.memoryUsage = 0;
         }
-        
+
         this.frameCount = 0;
         this.lastTime = currentTime;
       }
@@ -851,16 +893,16 @@ export default defineComponent({
       try {
         const container = document.getElementById("model-viewer");
         if (!container) return;
-        
+
         const camera = this.nonReactiveObjects.camera;
         const renderer = this.nonReactiveObjects.renderer;
-        
+
         if (!camera || !renderer) return;
 
         // 更新相机
         camera.aspect = container.clientWidth / container.clientHeight;
         camera.updateProjectionMatrix();
-        
+
         // 更新渲染器
         renderer.setSize(container.clientWidth, container.clientHeight);
       } catch (err) {
@@ -899,7 +941,7 @@ export default defineComponent({
     resetCamera() {
       const camera = this.nonReactiveObjects.camera;
       const controls = this.nonReactiveObjects.controls;
-      
+
       if (camera && controls) {
         camera.position.copy(this.initialCameraPosition);
         camera.lookAt(0, 0, 0);
@@ -917,10 +959,12 @@ export default defineComponent({
         if (object instanceof THREE.Mesh) {
           if (object.geometry instanceof THREE.BufferGeometry) {
             const geometry = object.geometry;
-            vertices += geometry.attributes.position ? geometry.attributes.position.count : 0;
+            vertices += geometry.attributes.position
+              ? geometry.attributes.position.count
+              : 0;
             faces += geometry.index ? geometry.index.count / 3 : 0;
           }
-          
+
           if (Array.isArray(object.material)) {
             materials += object.material.length;
           } else if (object.material) {
@@ -932,12 +976,14 @@ export default defineComponent({
       const box = markRaw(new THREE.Box3().setFromObject(model));
       const size = markRaw(new THREE.Vector3());
       box.getSize(size);
-      
+
       this.modelInfo = {
         vertices,
         faces,
         materials,
-        dimensions: `${size.x.toFixed(2)} x ${size.y.toFixed(2)} x ${size.z.toFixed(2)}`
+        dimensions: `${size.x.toFixed(2)} x ${size.y.toFixed(
+          2
+        )} x ${size.z.toFixed(2)}`,
       };
     },
     // 截图功能
@@ -946,24 +992,24 @@ export default defineComponent({
         const scene = this.nonReactiveObjects.scene;
         const camera = this.nonReactiveObjects.camera;
         const renderer = this.nonReactiveObjects.renderer;
-        
+
         if (!renderer || !scene || !camera) {
           throw new Error("渲染器未初始化");
         }
 
         // 强制渲染一帧
         renderer.render(scene, camera);
-        
+
         // 获取画布数据
         const canvas = renderer.domElement;
-        const dataURL = canvas.toDataURL('image/png');
-        
+        const dataURL = canvas.toDataURL("image/png");
+
         // 创建下载链接
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.download = `model-screenshot-${new Date().getTime()}.png`;
         link.href = dataURL;
         link.click();
-        
+
         console.log("截图已保存");
       } catch (err) {
         console.error("截图错误:", err);
@@ -1002,14 +1048,14 @@ export default defineComponent({
         }
       }
     },
-  }
+  },
 });
 </script>
 
 <style scoped>
 .model-container {
   width: 100%;
-  height: 600px;
+  height: 100%;
   position: relative;
   background-color: #222;
   overflow: hidden;
@@ -1047,7 +1093,9 @@ export default defineComponent({
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {

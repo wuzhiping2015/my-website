@@ -1,0 +1,30 @@
+{
+    "type": "FeatureCollection",
+    "features": [{
+            "type": "Feature",
+            "properties": {
+                "name": "东海航道",
+                "depth": 50
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [120.0, 30.0],
+                    [121.0, 30.5],
+                    [122.0, 31.0]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "港口区域",
+                "type": "port"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [121.5, 31.2]
+            }
+        }
+    ]
+}
